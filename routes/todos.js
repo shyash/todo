@@ -12,4 +12,7 @@ router.route("/:todoId")
 				.put(helpers.updateTodo)
 				.delete(helpers.deleteTodo)
 
+router.route("/:todoId/addCollab/:collabId")
+				.post(helpers.addCollab)
+
 module.exports = router
