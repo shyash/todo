@@ -11,7 +11,26 @@ const todoSchema = new mongoose.Schema({
 	date:{
 		type: Date,
 		default: Date.now
-	}
+	},
+	collaborators:[{
+		id : String,
+		canView : {
+			type: Boolean,
+			default: true },
+		canCreate : {
+			type: Boolean,
+			default: false },
+		canEdit : {
+			type: Boolean,
+			default: false },
+		canDelete : {
+			type: Boolean,
+			default: false },
+		canChangeOrder : {
+			type: Boolean,
+			default: false },
+
+	}]
 })
 const Todo = mongoose.model('Todo', todoSchema)
 module.exports = Todo
