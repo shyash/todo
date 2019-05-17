@@ -48,4 +48,20 @@ exports.deleteTodo = function(req,res) {
 		res.send(err)
 	})
 }
+exports.addCollab = function(req,res) {
+	db.Todo.findOne({_id:req.params.todoId})
+	.then(function(foundTodo) {
+		foundTodo.collaborators.push({"id": req.params.collabId})
+		foundTodo.save()
+		.then(function(saved) {
+			res.json(saved)
+		})
+		.catch(function(err) {
+		res.send(err)
+	})
+	})
+	.catch(function(err) {
+		res.send(err)
+	})
+}
 module.exports = exports
