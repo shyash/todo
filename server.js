@@ -14,11 +14,11 @@ app.use(express.static("public"));
 app.set("view engine", "ejs");
 app.use(flash());
 
-const todoRoutes = require("./routes/todos")
+const listRoutes = require("./routes/lists")
 app.get("/",function(req,res) {
 	res.send("Hello from root")
 })
-app.use("/api/todos", todoRoutes)
+app.use("/api/lists", listRoutes)
 
 app.listen(PORT, IP, () => {
     console.log('Server started!');
