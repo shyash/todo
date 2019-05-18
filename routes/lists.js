@@ -14,6 +14,7 @@ router.route("/:listId")
 
 router.route("/:listId/todos")
 				.get(helpers.getTodos)
+				.put(helpers.changeTodosOrder)
 				.post(helpers.createTodo)
 
 router.route("/:listId/todos/:todoId")
@@ -21,6 +22,7 @@ router.route("/:listId/todos/:todoId")
 				.delete(helpers.deleteTodo) 
 
 router.route("/:listId/collab/:collabId")
+				.put(helpers.updateCollab)
 				.post(helpers.addCollab)
 				.delete(helpers.deleteCollab)
 

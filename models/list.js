@@ -13,7 +13,9 @@ const listSchema = new mongoose.Schema({
 	 },
 
 	 todos:[{
-
+	 	index:{
+		 	type: Number
+	    },
 	 	name:{
 		 	type: String,
 			require: 'Please fill the Name!'
@@ -53,4 +55,16 @@ const listSchema = new mongoose.Schema({
 
 const List = mongoose.model('List', listSchema)
 
-module.exports = List
+var UserSchema  =  new mongoose.Schema(
+       {
+       	 username:String,
+         password:String,
+         mail: String, 
+         lists:[listSchema]
+      });
+
+UserSchema.plugin(passportLocalMongoose);
+let User = mongoose.model("User",UserSchema);
+
+
+module.exports =  User
