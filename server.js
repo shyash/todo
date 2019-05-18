@@ -1,6 +1,5 @@
 const PORT  = process.env.PORT || 8800;
 const IP    = process.env.IP || '0.0.0.0';
-const DBURI = process.env.DBURI || 'mongodb://localhost/stoxy';
 const express = require("express");
 const app 	= express();
 const bodyParser = require("body-parser");
