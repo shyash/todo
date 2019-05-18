@@ -48,6 +48,7 @@ exports.deleteList = function(req,res) {
 		res.send(err)
 	})
 }
+
 exports.addCollab = function(req,res) {
 	db.List.findOne({_id:req.params.listId})
 	.then(function(foundList) {
@@ -87,6 +88,43 @@ exports.deleteCollab = function(req,res) {
 	})
 }
 
+exports.updateCollab = function(req,res) {
+	db.List.findOne({_id:req.params.listId})
+	.then(function(foundList) {
+		for (let i = 0; i < foundList.collaborators.length; i++) {
+			if(foundList.collaborators[i]._id == req.params.collabId){
+				let viewPermission = true 
+				if (req.body.view != undefined ) foundList.collaborators[i].canView = true
+					 else { //if view permission is disabled then all permissions
+				  		foundList.collaborators[i].canView = false
+				  		viewPermission = false
+				        break }
+
+				if (req.body.create != undefined && viewPermission) foundList.collaborators[i].canCreate = true
+				  else foundList.collaborators[i].canCreate = false
+				if (req.body.edit != undefined && viewPermission) foundList.collaborators[i].canEdit = true
+				  else foundList.collaborators[i].canEdit = false
+				if (req.body.delete != undefined && viewPermission) foundList.collaborators[i].canDelete = true
+				  else foundList.collaborators[i].canDelete = false
+				if (req.body.changeOrder != undefined && viewPermission) foundList.collaborators[i].canChangeOrder = true
+				  else foundList.collaborators[i].canChangeOrder = false
+
+				break
+			}
+		}
+		foundList.save()
+		.then(function(saved) {
+			res.json(saved)
+		})
+		.catch(function(err) {
+		res.send(err)
+	})
+	})
+	.catch(function(err) {
+		res.send(err)
+	})
+}
+
 // Todo Routes
 
 exports.getTodos = function(req,res) {
@@ -102,7 +140,26 @@ exports.getTodos = function(req,res) {
 exports.createTodo = function(req,res) {
 	db.List.findOne({_id:req.params.listId})
 	.then(function(foundList) {
-		foundList.todos.push({"name": req.body.name})
+		foundList.todos.push({"name": req.body.name,"index" : foundList.todos.length})
+		foundList.save()
+		.then(function(saved) {
+			res.json(saved)
+		})
+		.catch(function(err) {
+		res.send(err)
+	})
+	})
+	.catch(function(err) {
+		res.send(err)
+	})
+}
+
+exports.changeTodosOrder = function(req,res) {
+	db.List.findOne({_id:req.params.listId})
+	.then(function(foundList) {
+		for (let i = 0; i < foundList.todos.length; i++) {
+			foundList.todos[i].index = JSON.parse(req.body.arr)[i]
+		}
 		foundList.save()
 		.then(function(saved) {
 			res.json(saved)
