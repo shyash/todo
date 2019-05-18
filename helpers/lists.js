@@ -1,18 +1,26 @@
 const db = require("../models")
 
 exports.getLists = function(req,res) {
-	db.List.find()
-	.then(function(lists) {
-		res.json(lists)
+	db.User.findOne({"_id":req.user._id})
+	.then(function(user) {
+		res.json(user.lists)
 	})
 	.catch(function(err) {
 		res.send(err)
 	})
 }
+
 exports.createList = function(req,res) {
-	db.List.create(req.body)
-	.then(function(newList) {
-		res.status(201).json(newList)
+	db.User.findOne({"_id":req.user._id}) 
+	.then(function(user) {
+		user.lists.push(req.body)
+		user.save()
+		.then(function(saved) {
+			res.json(saved.lists[saved.lists.length-1])
+		})
+		.catch(function(err) {
+		res.send(err)
+	})
 	})
 	.catch(function(err) {
 		res.send(err)
@@ -20,117 +28,173 @@ exports.createList = function(req,res) {
 }
 
 exports.getList = function(req,res) {
-	db.List.findById(req.params.listId)
-	.then(function(foundList) {
-		res.json(foundList)
-	})
+	let i
+	db.User.findOne({"_id":req.user._id})
+	.then(function(user) {
+		 for (i = 0; i < user.lists.length; i++) {
+
+			 if(user.lists[i]._id == req.params.listId) break
+		  } 
+			 res.json(user.lists[i])
+	 })
+
 	.catch(function(err) {
 		res.send(err)
 	})
 }
 
 exports.updateList = function(req,res) {
-	db.List.findOneAndUpdate({_id: req.params.listId},req.body,{new : true})
-	.then(function(list) {
-		res.json(list)
-	})
+	let i
+	db.User.findOne({"_id":req.user._id})
+	.then(function(user) {
+		 for ( i = 0; i < user.lists.length; i++) {
+			  if(user.lists[i]._id == req.params.listId){
+			 		user.lists[i].title = req.body.title
+			        break
+			   }
+		  } 
+			 user.save()
+			 .then(function(saved) {
+			 	res.json(saved.lists[i])
+			  })
+			 .catch(function(err) {
+		        res.send(err)
+	          }) 
+    })
 	.catch(function(err) {
 		res.send(err)
 	})
 }
 
 exports.deleteList = function(req,res) {
-	db.List.deleteOne({_id:req.params.listId})
-	.then(function() {
-		res.json({message : "deleted"})
-	})
-	.catch(function(err) {
+	db.User.findOne({"_id":req.user._id})
+	.then(function(user) {
+		 for (let i = 0; i < user.lists.length; i++) {
+			  if(user.lists[i]._id == req.params.listId){
+			 	 user.lists[i].splice(i,1)
+			     break
+			  }
+		 } 
+		      user.save()
+			  .then(function(saved) {
+		    	res.json({message : "deleted"})
+				})
+			  .catch(function(err) {
+				 res.send(err)
+	 			}) 
+  	 })
+     .catch(function(err) {
 		res.send(err)
-	})
+	 })
 }
 
 exports.addCollab = function(req,res) {
-	db.List.findOne({_id:req.params.listId})
-	.then(function(foundList) {
-		foundList.collaborators.push({"id": req.params.collabId})
-		foundList.save()
-		.then(function(saved) {
-			res.json(saved)
-		})
-		.catch(function(err) {
+	let i
+	db.User.findOne({"_id":req.user._id})
+	.then(function(user) {
+		  for ( i = 0; i < user.lists.length; i++) {
+			   if(user.lists[i]._id == req.params.listId){
+			 	  user.lists[i].collaborators.push({"id": req.params.collabId})
+			      break
+			     }
+		  } 
+		 		user.save()
+				.then(function(saved) {
+					res.json(saved.lists[i])
+				})
+				.catch(function(err) {
+					res.send(err)
+	 			}) 
+   	})
+     .catch(function(err) {
 		res.send(err)
 	})
-	})
-	.catch(function(err) {
-		res.send(err)
-	})
-}
-
+  }
 exports.deleteCollab = function(req,res) {
-	db.List.findOne({_id:req.params.listId})
-	.then(function(foundList) {
-		for (let i = 0; i < foundList.collaborators.length; i++) {
-			if(foundList.collaborators[i]._id == req.params.collabId){
-				 foundList.collaborators.splice(i,1)
-				 break
-			}
-		}
-		foundList.save()
-		.then(function(saved) {
-			res.json(saved)
-		})
-		.catch(function(err) {
+	let i
+    db.User.findOne({"_id":req.user._id})
+	.then(function(user) {
+			for ( i = 0; i < user.lists.length; i++) {
+				 if(user.lists[i]._id == req.params.listId){
+			 			for (let j = 0; j < user.lists[i].collaborators.length; j++) {
+								if(user.lists[i].collaborators[j]._id == req.params.collabId){
+					  			   user.lists[i].collaborators.splice(j,1)
+				       			   break
+								}
+						}
+			        break
+				  }
+		    } 
+				 user.save()
+				 .then(function(saved) {
+					res.json(saved.lists[i])
+				 })
+				.catch(function(err) {
+					res.send(err)
+				 }) 
+   })
+   .catch(function(err) {
 		res.send(err)
-	})
-	})
-	.catch(function(err) {
-		res.send(err)
-	})
+	}) 
 }
 
 exports.updateCollab = function(req,res) {
-	db.List.findOne({_id:req.params.listId})
-	.then(function(foundList) {
-		for (let i = 0; i < foundList.collaborators.length; i++) {
-			if(foundList.collaborators[i]._id == req.params.collabId){
-				let viewPermission = true 
-				if (req.body.view != undefined ) foundList.collaborators[i].canView = true
-					 else { //if view permission is disabled then all permissions
-				  		foundList.collaborators[i].canView = false
-				  		viewPermission = false
-				        break }
+	let i
+	db.User.findOne({"_id":req.user._id})
+	.then(function(user) {
+		  for (  i = 0; i < user.lists.length; i++) {
+			   if(user.lists[i]._id == req.params.listId){
+			 	    for (let j = 0; j < user.lists[i].collaborators.length; j++) {
+					    if(user.lists[i].collaborators[j]._id == req.params.collabId){
+ 						  
+						    if (req.body.view != undefined ) user.lists[i].collaborators[j].canView = true
+					 			else { //if view permission is disabled then all permissions
+				  					    user.lists[i].collaborators[j].canView = false
+				  					    user.lists[i].collaborators[j].canCreate = false
+										user.lists[i].collaborators[j].canEdit = false
+										user.lists[i].collaborators[j].canDelete = false
+										user.lists[i].collaborators[j].canChangeOrder = false		  
+				      				   break
+				      				  }
 
-				if (req.body.create != undefined && viewPermission) foundList.collaborators[i].canCreate = true
-				  else foundList.collaborators[i].canCreate = false
-				if (req.body.edit != undefined && viewPermission) foundList.collaborators[i].canEdit = true
-				  else foundList.collaborators[i].canEdit = false
-				if (req.body.delete != undefined && viewPermission) foundList.collaborators[i].canDelete = true
-				  else foundList.collaborators[i].canDelete = false
-				if (req.body.changeOrder != undefined && viewPermission) foundList.collaborators[i].canChangeOrder = true
-				  else foundList.collaborators[i].canChangeOrder = false
-
-				break
-			}
-		}
-		foundList.save()
-		.then(function(saved) {
-			res.json(saved)
-		})
-		.catch(function(err) {
+							if (req.body.create != undefined) user.lists[i].collaborators[j].canCreate = true
+							  else user.lists[i].collaborators[j].canCreate = false
+							if (req.body.edit != undefined) user.lists[i].collaborators[j].canEdit = true
+							  else user.lists[i].collaborators[j].canEdit = false
+							if (req.body.delete != undefined) user.lists[i].collaborators[j].canDelete = true
+							  else user.lists[i].collaborators[j].canDelete = false
+							if (req.body.changeOrder != undefined) user.lists[i].collaborators[j].canChangeOrder = true
+							  else user.lists[i].collaborators[j].canChangeOrder = false
+			
+							break
+						}
+			    	}
+			     break
+			    }
+			} 
+				 user.save()
+				 .then(function(saved) {
+					 res.json(saved.lists[i])
+				 })
+				 .catch(function(err) {
+					res.send(err)
+	 			 }) 
+     })
+	 .catch(function(err) {
 		res.send(err)
-	})
-	})
-	.catch(function(err) {
-		res.send(err)
-	})
+	 })
 }
 
 // Todo Routes
 
 exports.getTodos = function(req,res) {
-	db.List.findOne({_id:req.params.listId})
-	.then(function(foundList) {
-		res.json(foundList.todos)
+	let i
+	db.User.findOne({"_id":req.user._id})
+	.then(function(user) {
+			for (  i = 0; i < user.lists.length; i++) {
+				 if(user.lists[i]._id == req.params.listId) break
+			 } 
+		  		res.json(user.lists[i].todos)
 	})
 	.catch(function(err) {
 		res.send(err)
@@ -138,16 +202,22 @@ exports.getTodos = function(req,res) {
 }
 
 exports.createTodo = function(req,res) {
-	db.List.findOne({_id:req.params.listId})
-	.then(function(foundList) {
-		foundList.todos.push({"name": req.body.name,"index" : foundList.todos.length})
-		foundList.save()
-		.then(function(saved) {
-			res.json(saved)
-		})
-		.catch(function(err) {
-		res.send(err)
-	})
+	let i
+	db.User.findOne({"_id":req.user._id})
+	.then(function(user) {
+		    for ( i = 0; i < user.lists.length; i++) {
+			 	if(user.lists[i]._id == req.params.listId) {
+			 		 user.lists[i].todos.push({"name": req.body.name,"index" : user.lists[i].todos.length})
+			     break
+			    }
+		     } 	 
+				user.save()
+				.then(function(saved) {
+					res.json(saved.lists[i])
+				})
+				.catch(function(err) {
+				res.send(err)
+				})
 	})
 	.catch(function(err) {
 		res.send(err)
@@ -155,18 +225,24 @@ exports.createTodo = function(req,res) {
 }
 
 exports.changeTodosOrder = function(req,res) {
-	db.List.findOne({_id:req.params.listId})
-	.then(function(foundList) {
-		for (let i = 0; i < foundList.todos.length; i++) {
-			foundList.todos[i].index = JSON.parse(req.body.arr)[i]
-		}
-		foundList.save()
-		.then(function(saved) {
-			res.json(saved)
-		})
-		.catch(function(err) {
-		res.send(err)
-	})
+	let i
+	db.User.findOne({"_id":req.user._id})
+	.then(function(user) {
+			for ( i = 0; i < user.lists.length; i++) {
+			 	if(user.lists[i]._id == req.params.listId) {
+			 	 	for (let j = 0; j < user.lists[i].todos.length; j++) {
+						user.lists[i].todos[j].index = JSON.parse(req.body.arr)[j]
+					}
+			     break
+			    }
+		    } 	 
+				user.save()
+				.then(function(saved) {
+					res.json(saved.lists[i])
+				})
+				.catch(function(err) {
+				res.send(err)
+				})
 	})
 	.catch(function(err) {
 		res.send(err)
@@ -174,21 +250,28 @@ exports.changeTodosOrder = function(req,res) {
 }
 
 exports.updateTodo = function(req,res) {
-	db.List.findOne({_id:req.params.listId})
-	.then(function(foundList) { 
-		for (let i = 0; i < foundList.todos.length; i++) {
-			if(foundList.todos[i]._id == req.params.todoId){
-				 foundList.todos[i].name = req.body.name
-				 break
-			}
-		}
-		foundList.save()
-		.then(function(saved) {
-			res.json(saved)
-		})
-		.catch(function(err) {
-		res.send(err)
-	})
+	let i,j
+	db.User.findOne({"_id":req.user._id})
+	.then(function(user) {
+			for ( i = 0; i < user.lists.length; i++) {
+			 	if(user.lists[i]._id == req.params.listId) {
+			 	 	for ( j = 0; j < user.lists[i].todos.length; j++) {
+						if(user.lists[i].todos[j]._id == req.params.todoId){
+							 user.lists[i].todos[j].name = req.body.name
+				 		 break
+						}
+					}
+
+			     break
+			 	}
+			} 	 
+		        user.save()
+		        .then(function(saved) {
+		        	res.json(saved.lists[i])
+		        })
+		        .catch(function(err) {
+		        res.send(err)
+				})
 	})
 	.catch(function(err) {
 		res.send(err)
@@ -196,25 +279,31 @@ exports.updateTodo = function(req,res) {
 }
 
 exports.deleteTodo = function(req,res) {
-	db.List.findOne({_id:req.params.listId})
-		.then(function(foundList) { 
-		for (let i = 0; i < foundList.todos.length; i++) {
-			if(foundList.todos[i]._id == req.params.todoId){
-				 foundList.todos.splice(i,1)
-				 break
-			}
-		}
-		foundList.save()
-		.then(function(saved) {
-			res.json(saved)
-		})
-		.catch(function(err) {
-		res.send(err)
-	})
+	let i
+	db.User.findOne({"_id":req.user._id})
+	.then(function(user) {
+			for ( i = 0; i < user.lists.length; i++) {
+				if(user.lists[i]._id == req.params.listId) {
+			 		for (let j = 0; j < user.lists[i].todos.length; j++) {
+						if(user.lists[i].todos[j]._id == req.params.todoId){
+							 user.lists[i].todos.splice(j,1)
+				 		break
+						}
+					}
+			     break
+				 }
+			} 	 
+					user.save()
+					.then(function(saved) {
+						res.json(saved.lists[i])
+					})
+					.catch(function(err) {
+					res.send(err)
+					})
 	})
 	.catch(function(err) {
 		res.send(err)
-	})
+	})	 
 }
 
 module.exports = exports
