@@ -4,4 +4,4 @@ mongoose.set('debug', true)
 mongoose.connection.openUri(DBURI, {useNewUrlParser:  true, useFindAndModify: false})
 mongoose.Promise = Promise
 
-module.exports.List = require("./list") 
+module.exports.User = require("./list") 
