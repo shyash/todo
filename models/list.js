@@ -34,6 +34,7 @@ const listSchema = new mongoose.Schema({
 
 	 collaborators:[{
 		id : String,
+		name : String,
 		canView : {
 			type: Boolean,
 			default: true },
