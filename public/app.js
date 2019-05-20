@@ -36,7 +36,7 @@ function arrangeLists(lists) {
     	   $(".listItems").append(`<div class="list_holder">nothing here yet!</div>`)
     	} 
 }
-
+ 
 function newList() {
     $.post("/api/lists",{title: $("#newListInput").val() })
 	 .then(function(data) {
