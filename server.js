@@ -37,7 +37,7 @@ const listRoutes = require("./routes/lists")
 app.get("/",function(req,res) {
 	res.render("index");
 })
-app.use("/api/lists", listRoutes)
+app.use("/api/lists",isLoggedIn, listRoutes)
 
 
 app.get("/register",function(req,res){

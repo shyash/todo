@@ -3,7 +3,7 @@ const db = require("../models")
 exports.getLists = function(req,res) {
 	db.User.findOne({"_id":req.user._id})
 	.then(function(user) {
-		res.json(user.lists)
+		res.status(200).json(user.lists)
 	})
 	.catch(function(err) {
 		res.send(err)
@@ -16,7 +16,7 @@ exports.createList = function(req,res) {
 		user.lists.push(req.body)
 		user.save()
 		.then(function(saved) {
-			res.json(saved.lists[saved.lists.length-1])
+			res.status(201).json(saved.lists[saved.lists.length-1])
 		})
 		.catch(function(err) {
 		res.send(err)
@@ -35,7 +35,7 @@ exports.getList = function(req,res) {
 
 			 if(user.lists[i]._id == req.params.listId) break
 		  } 
-			 res.json(user.lists[i])
+			 res.status(200).json(user.lists[i])
 	 })
 
 	.catch(function(err) {
@@ -55,7 +55,7 @@ exports.updateList = function(req,res) {
 		  } 
 			 user.save()
 			 .then(function(saved) {
-			 	res.json(saved.lists[i])
+			 	res.status(200).json(saved.lists[i])
 			  })
 			 .catch(function(err) {
 		        res.send(err)
@@ -77,7 +77,7 @@ exports.deleteList = function(req,res) {
 		 } 
 		      user.save()
 			  .then(function(saved) {
-		    	res.json({message : "deleted"})
+		    	res.status(202).json({message : "deleted"})
 				})
 			  .catch(function(err) {
 				 res.send(err)
@@ -102,7 +102,7 @@ exports.getCollabLists = function(req,res) {
 			 	}
 			 }
 		}
-		res.json(arr)
+		res.status(200).json(arr)
 	})
 	.catch(function(err) {
 		res.send(err)
@@ -120,7 +120,7 @@ exports.addCollab = function(req,res) {
 		  } 
 		 		user.save()
 				.then(function(saved) {
-					res.json(saved.lists[i])
+					res.status(201).json(saved.lists[i])
 				})
 				.catch(function(err) {
 					res.send(err)
@@ -147,7 +147,7 @@ exports.deleteCollab = function(req,res) {
 		    } 
 				 user.save()
 				 .then(function(saved) {
-					res.json(saved.lists[i])
+					res.status(202).json(saved.lists[i])
 				 })
 				.catch(function(err) {
 					res.send(err)
@@ -194,7 +194,7 @@ exports.updateCollab = function(req,res) {
 			} 
 				 user.save()
 				 .then(function(saved) {
-					 res.json(saved.lists[i])
+					 res.status(200).json(saved.lists[i])
 				 })
 				 .catch(function(err) {
 					res.send(err)
@@ -214,7 +214,7 @@ exports.getTodos = function(req,res) {
 			for (  i = 0; i < user.lists.length; i++) {
 				 if(user.lists[i]._id == req.params.listId) break
 			 } 
-		  		res.json(user.lists[i].todos)
+		  		res.status(200).json(user.lists[i].todos)
 	})
 	.catch(function(err) {
 		res.send(err)
@@ -233,7 +233,7 @@ exports.createTodo = function(req,res) {
 		     } 	 
 				user.save()
 				.then(function(saved) {
-					res.json(saved.lists[i].todos[saved.lists[i].todos.length-1])
+					res.status(201).json(saved.lists[i].todos[saved.lists[i].todos.length-1])
 				})
 				.catch(function(err) {
 				res.send(err)
@@ -258,7 +258,7 @@ exports.changeTodosOrder = function(req,res) {
 		    } 	 
 				user.save()
 				.then(function(saved) {
-					res.json(saved.lists[i])
+					res.status(200).json(saved.lists[i])
 				})
 				.catch(function(err) {
 				res.send(err)
@@ -287,7 +287,7 @@ exports.updateTodo = function(req,res) {
 			} 	 
 		        user.save()
 		        .then(function(saved) {
-		        	res.json(saved.lists[i].todos[j])
+		        	res.status(200).json(saved.lists[i].todos[j])
 		        })
 		        .catch(function(err) {
 		        res.send(err)
@@ -315,7 +315,7 @@ exports.deleteTodo = function(req,res) {
 			} 	 
 					user.save()
 					.then(function(saved) {
-						res.json(saved.lists[i])
+						res.status(202).json(saved.lists[i])
 					})
 					.catch(function(err) {
 					res.send(err)
