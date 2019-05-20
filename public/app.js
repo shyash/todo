@@ -1,7 +1,10 @@
+let currentList  
 $(document).ready(function(){
+	let currentList
  	$.getJSON("/api/lists")
- 	.then(function(lists) {
+ 	.then(function(lists) {  
  		arrangeLists(lists)
+ 		getTodos(lists[0]._id,lists[0].title)
  	})
  	.catch(function(err) {
  		console.log(err)
@@ -10,19 +13,19 @@ $(document).ready(function(){
  })
 
 function arrangeLists(lists) {
-	if (lists.length) {
-		$(".listsLength").append(`${lists.length}`)
- 	 		for (var i = 0; i < lists.length; i++) { 
+	$(".listsLength").append(`${lists.length}`)
+	if (lists.length){
+		for (var i = 0; i < lists.length; i++) { 
     	  		$(".listItems").append(`
     	   			<div class="list_holder">
-    	   				<div>${lists[i].title}</div>
+    	   				<div class="listTitle">${lists[i].title}</div>
     	   				<div>
     	   					<div>
-									<button onclick="edit(this)" >Edit</button>
-									<button>Save</button>
+									<button onclick="editList($(this))" >Edit</button>
+									<button onclick="updateList($(this),'${lists[i]._id}')" >Save</button>
     	   					</div>
  							<div>
-    	   						<button onclick="deleteList('${lists[i]._id}');$(this).parent().parent().remove()">Delete</button>
+    	   						<button onclick="deleteList('${lists[i]._id}');$(this).parent().parent().parent().remove()">Delete</button>
     	   					</div>
     	   				</div>
     	  	 		</div>
