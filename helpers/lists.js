@@ -213,7 +213,7 @@ exports.createTodo = function(req,res) {
 		     } 	 
 				user.save()
 				.then(function(saved) {
-					res.json(saved.lists[i])
+					res.json(saved.lists[i].todos[saved.lists[i].todos.length-1])
 				})
 				.catch(function(err) {
 				res.send(err)
