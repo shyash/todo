@@ -267,7 +267,7 @@ exports.updateTodo = function(req,res) {
 			} 	 
 		        user.save()
 		        .then(function(saved) {
-		        	res.json(saved.lists[i])
+		        	res.json(saved.lists[i].todos[j])
 		        })
 		        .catch(function(err) {
 		        res.send(err)
