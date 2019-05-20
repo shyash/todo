@@ -71,7 +71,7 @@ exports.deleteList = function(req,res) {
 	.then(function(user) {
 		 for (let i = 0; i < user.lists.length; i++) {
 			  if(user.lists[i]._id == req.params.listId){
-			 	 user.lists[i].splice(i,1)
+			 	 user.lists.splice(i,1)
 			     break
 			  }
 		 } 
