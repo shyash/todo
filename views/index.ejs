@@ -72,16 +72,30 @@
 
     			</div>
     		</aside>
+			
+			<aside class="box">
+			   <h3>todos of <span class="list"></span> list (<span class="todosLength"></span>)</h3>
+				<div class="todos">
+					<div class="todoItems"></div>
+					<div class="newTodo">
+						<input id="newTodoInput" type="text" name="name" required>
+						<button onclick="newTodo()">submit</button>
+					</div>
+				</div>
+			</aside>
 
-    		<section class="todoList">
+			<aside class="box">
+			   <h3>collaborators of <span class="list"></span> list (<span class="collabsLength"></span>)</h3>
+				<div class="collabs">
+					<div class="collabItems"></div>
+					<div class="newCollab">
+						<input id="newCollabInput" type="text" name="name" required>
+						<button onclick="newCollab()">submit</button>
+					</div>
+				</div>
+			</aside>
 
-    			<div class="todoListTitle todoList"></div>
-
-    		</section>
-
-    		<aside class="collaborators">
-    		    <div class="todoListTitle collaborators"></div>
-    		</aside>	
+    		 	
 
 		</div>
     	
