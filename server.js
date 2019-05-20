@@ -37,7 +37,7 @@ app.use(function(req,res,next) {
 
 const listRoutes = require("./routes/lists")
 app.get("/",function(req,res) {
-	res.send("Hello from root")
+	res.render("index");
 })
 app.use("/api/lists", listRoutes)
 app.get("/register",function(req,res){
