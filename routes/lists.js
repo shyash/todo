@@ -26,4 +26,7 @@ router.route("/:listId/collab/:collabName")
 				.post(helpers.addCollab)
 				.delete(helpers.deleteCollab)
 
+router.route("/collab/:collabName")
+				.get(helpers.getCollabLists)
+				
 module.exports = router

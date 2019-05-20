@@ -1,8 +1,10 @@
 const mongoose = require("mongoose")
 const passportLocalMongoose = require('passport-local-mongoose')
 const listSchema = new mongoose.Schema({
-
-	 title:{
+	author:{
+		type: String
+	},
+	title:{
 	 	type: String
 	 },
 
@@ -33,7 +35,6 @@ const listSchema = new mongoose.Schema({
 	 }],
 
 	 collaborators:[{
-		id : String,
 		name : String,
 		canView : {
 			type: Boolean,
@@ -50,7 +51,7 @@ const listSchema = new mongoose.Schema({
 		canChangeOrder : {
 			type: Boolean,
 			default: false },
-	}]
+	}] 
 })
 
 const List = mongoose.model('List', listSchema)
