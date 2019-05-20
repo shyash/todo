@@ -88,6 +88,26 @@ exports.deleteList = function(req,res) {
 	 })
 }
 
+exports.getCollabLists = function(req,res) {
+	let arr = []
+	db.User.find({})
+	.then(function(j) {
+		for (let i = 0; i < user.length; i++) {
+			 for (let j = 0; j < user[i].lists.length; j++) {
+			 	for (let k = 0; k < user[i].lists[j].collaborators.length; k++) {
+			 		if(user[i].lists[j].collaborators[k].name == req.params.name){
+			 			arr.push(user[i].lists[j])
+			 			break
+			 		}
+			 	}
+			 }
+		}
+		res.json(arr)
+	})
+	.catch(function(err) {
+		res.send(err)
+	})
+}
 exports.addCollab = function(req,res) {
 	let i
 	db.User.findOne({"_id":req.user._id})
