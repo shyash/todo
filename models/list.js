@@ -3,8 +3,7 @@ const passportLocalMongoose = require('passport-local-mongoose')
 const listSchema = new mongoose.Schema({
 
 	 title:{
-	 	type: String,
-		require: 'Please fill the Title!'
+	 	type: String
 	 },
 
 	 listCreatedDate:{
@@ -18,7 +17,7 @@ const listSchema = new mongoose.Schema({
 	    },
 	 	name:{
 		 	type: String,
-			require: 'Please fill the Name!'
+			required: true
 	    },
 
 	    completed:{
